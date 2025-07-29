@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Single Page Site</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+            background: #f7f7f7;
+        }
+        .navigation {
+            width: 220px;
+            background: #222;
+            color: #fff;
+            min-height: 100vh;
+            padding-top: 30px;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+        }
+        .navigation ul {
+            list-style: none;
+            padding: 0;
+        }
+        .navigation li {
+            margin: 20px 0;
+        }
+        .navigation a {
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 24px;
+            display: block;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .navigation a.active, .navigation a:hover {
+            background: #444;
+        }
+        .content {
+            flex: 1;
+            padding: 40px;
+        }
+        section {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+        section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <ul>
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <section id="home" class="active">
+            <h1>Welcome to My Single Page Site</h1>
+            <p>This is the home section.</p>
+        </section>
+        <section id="about">
+            <h1>About Us</h1>
+            <p>This is the about section.</p>
+        </section>
+        <section id="services">
+            <h1>Our Services</h1>
+            <p>This is the services section.</p>
+        </section>
+        <section id="contact">
+            <h1>Contact Us</h1>
+            <p>This is the contact section.</p>
+        </section>
+    </div>
+    <script>
+        // Navigation logic for single page app
+        const navLinks = document.querySelectorAll('.navigation a');
+        const sections = document.querySelectorAll('.content section');
+
+        function showSection(hash) {
+            sections.forEach(section => {
+                section.classList.toggle('active', '#' + section.id === hash);
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === hash);
+            });
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const hash = this.getAttribute('href');
+                history.pushState(null, '', hash);
+                showSection(hash);
+            });
+        });
+
+        window.addEventListener('popstate', () => {
+            showSection(location.hash || '#home');
+        });
+
+        // On page load, show correct section
+        showSection(location.hash || '#home');
+    </script>
+</body>
+</html>
