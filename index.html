@@ -3,89 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>web1</title>
+    <title>Minimalist Studio</title>
     <style>
+        :root {
+            --bg: #f4f6fb;
+            --text: #161b25;
+            --muted: #606779;
+            --accent: #3a6bf2;
+            --surface: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
             margin: 0;
+            min-height: 100vh;
             display: flex;
-            min-height: 100vh;
-            background: #f7f7f7;
+            flex-direction: column;
+            background: linear-gradient(180deg, rgba(244, 246, 251, 0.8), rgba(244, 246, 251, 1));
+            color: var(--text);
         }
-        .navigation {
-            width: 220px;
-            background: #222;
-            color: #fff;
-            min-height: 100vh;
-            padding-top: 30px;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(22, 27, 37, 0.05);
+            box-shadow: 0 8px 24px rgba(20, 35, 90, 0.07);
         }
-        .navigation ul {
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+        }
+
+        .brand {
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .menu-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(58, 107, 242, 0.1);
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        nav ul {
             list-style: none;
+            margin: 0;
             padding: 0;
+            display: flex;
+            gap: 0.5rem;
+            flex-direction: column;
         }
-        .navigation li {
-            margin: 20px 0;
-        }
-        .navigation a {
-            color: #fff;
+
+        nav a {
             text-decoration: none;
-            padding: 12px 24px;
-            display: block;
-            border-radius: 4px;
-            transition: background 0.2s;
+            color: var(--muted);
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 999px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-        .navigation a.active, .navigation a:hover {
-            background: #444;
+
+        nav a:hover,
+        nav a.active {
+            color: var(--accent);
+            background: rgba(58, 107, 242, 0.12);
         }
-        .content {
+
+        .nav-drawer {
+            position: fixed;
+            inset: 72px 1.25rem auto 1.25rem;
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: 0 20px 60px rgba(22, 27, 37, 0.15);
+            padding: 1rem;
+            transform: translateY(-15px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .nav-drawer.open {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        main {
             flex: 1;
-            padding: 40px;
+            width: min(1080px, 100%);
+            margin: 0 auto;
+            padding: 3.5rem 1.5rem 4rem;
+            display: grid;
+            gap: 2.5rem;
         }
+
         section {
             display: none;
-            animation: fadeIn 0.4s;
+            animation: fadeIn 0.4s ease;
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: 0 16px 40px rgba(22, 27, 37, 0.08);
+            padding: clamp(2rem, 3vw, 3.25rem);
         }
+
         section.active {
             display: block;
         }
+
+        section h1 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: clamp(2rem, 4vw, 2.75rem);
+        }
+
+        section p {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .button {
+            padding: 0.85rem 1.5rem;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .button.primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 12px 30px rgba(58, 107, 242, 0.25);
+        }
+
+        .button.secondary {
+            background: transparent;
+            color: var(--accent);
+            border-color: rgba(58, 107, 242, 0.25);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(58, 107, 242, 0.25);
+        }
+
+        .features-grid {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+
+        .feature-card {
+            border-radius: 16px;
+            padding: 1.5rem;
+            background: linear-gradient(160deg, rgba(58, 107, 242, 0.09), rgba(58, 107, 242, 0.02));
+            border: 1px solid rgba(58, 107, 242, 0.15);
+        }
+
+        .feature-card h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .feature-card p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .split-layout {
+            display: grid;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .stat-stack {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .stat {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+        }
+
+        .stat strong {
+            font-size: 2.2rem;
+            color: var(--accent);
+        }
+
+        .contact-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            padding: 0.85rem 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(22, 27, 37, 0.1);
+            font: inherit;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .contact-form textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        footer {
+            padding: 2rem 1.5rem 3rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        @media (min-width: 640px) {
+            nav ul {
+                flex-direction: row;
+                gap: 0.25rem;
+            }
+
+            .nav-drawer {
+                position: static;
+                opacity: 1;
+                transform: none;
+                pointer-events: auto;
+                background: transparent;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+        @media (min-width: 880px) {
+            .split-layout {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .contact-grid {
+                grid-template-columns: 1.1fr 0.9fr;
+                align-items: start;
+            }
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px);}
-            to { opacity: 1; transform: translateY(0);}
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
 <body>
-    <div class="navigation">
-        <ul>
-            <li><a href="#home" class="active">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </div>
-    <div class="content">
+    <header>
+        <div class="top-bar">
+            <div class="brand">MINIMALIST STUDIO</div>
+            <button class="menu-toggle" aria-expanded="false" aria-controls="primary-navigation" aria-label="Toggle navigation">
+                &#9776;
+            </button>
+            <nav id="primary-navigation" class="nav-drawer" aria-label="Main navigation">
+                <ul>
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
         <section id="home" class="active">
-            <h1>Welcome to My Single Page Site</h1>
-            <p>This is the home section.</p>
+            <div class="split-layout">
+                <div>
+                    <h1>Designing calm, purposeful digital experiences.</h1>
+                    <p>
+                        Minimalist Studio helps teams craft thoughtful products with clarity, rhythm, and impact.
+                        We focus on lean interfaces that adapt beautifully across devices.
+                    </p>
+                    <div class="hero-actions">
+                        <button class="button primary">Start a project</button>
+                        <button class="button secondary">View our work</button>
+                    </div>
+                </div>
+                <div class="stat-stack">
+                    <div class="stat"><strong>140+</strong>brands partnered worldwide</div>
+                    <div class="stat"><strong>12</strong>years designing for humans</div>
+                    <div class="stat"><strong>98%</strong>client satisfaction rate</div>
+                </div>
+            </div>
         </section>
         <section id="about">
-            <h1>About Us</h1>
-            <p>This is the about section.</p>
+            <h1>About Minimalist Studio</h1>
+            <p>
+                We are a remote-first collective of designers, developers, and strategists building intentional digital
+                products. Our ethos is to remove friction and amplify the essential, resulting in interfaces that feel
+                effortless and intuitive.
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Human-centered research</h3>
+                    <p>We pair qualitative research with rapid prototyping to uncover meaningful opportunities.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Design systems</h3>
+                    <p>Scalable design tokens and component libraries keep your team moving fast and in sync.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Accessible experiences</h3>
+                    <p>We design with inclusivity in mind, ensuring every interaction is usable and delightful.</p>
+                </div>
+            </div>
         </section>
         <section id="services">
-            <h1>Our Services</h1>
-            <p>This is the services section.</p>
+            <h1>Services that adapt with you</h1>
+            <p>
+                From strategy to polish, we help teams move from idea to launch with clarity and momentum. Each
+                engagement is modular so you get exactly the support you need.
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Product Strategy</h3>
+                    <p>Roadmapping, positioning, and customer journey mapping to align your product vision.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Interface Design</h3>
+                    <p>Responsive UI/UX design with design system integration and interaction guidelines.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Web Development</h3>
+                    <p>Modern front-end development with performance optimization and accessibility baked in.</p>
+                </div>
+            </div>
         </section>
         <section id="contact">
-            <h1>Contact Us</h1>
-            <p>This is the contact section.</p>
+            <h1>Let's build something together</h1>
+            <p>
+                Share a bit about your product or challenge and we’ll set up a collaborative working session.
+            </p>
+            <div class="contact-grid">
+                <form class="contact-form">
+                    <input type="text" name="name" placeholder="Your name" aria-label="Your name">
+                    <input type="email" name="email" placeholder="Email address" aria-label="Email address">
+                    <textarea name="message" placeholder="Tell us about your project" aria-label="Project details"></textarea>
+                    <button class="button primary" type="submit">Request a call</button>
+                </form>
+                <div class="stat-stack">
+                    <div class="stat"><strong>24h</strong>average response time</div>
+                    <div class="stat"><strong>4.9/5</strong>average project rating</div>
+                    <div class="stat"><strong>3</strong>continents with dedicated teams</div>
+                </div>
+            </div>
         </section>
-    </div>
+    </main>
+    <footer>
+        Crafted with clarity. © <span id="current-year"></span> Minimalist Studio.
+    </footer>
     <script>
         // Navigation logic for single page app
-        const navLinks = document.querySelectorAll('.navigation a');
-        const sections = document.querySelectorAll('.content section');
+        const nav = document.getElementById('primary-navigation');
+        const navLinks = nav.querySelectorAll('a');
+        const sections = document.querySelectorAll('main section');
+        const menuToggle = document.querySelector('.menu-toggle');
 
         function showSection(hash) {
             sections.forEach(section => {
@@ -97,11 +421,12 @@
         }
 
         navLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
+            link.addEventListener('click', function (e) {
                 e.preventDefault();
                 const hash = this.getAttribute('href');
                 history.pushState(null, '', hash);
                 showSection(hash);
+                closeNav();
             });
         });
 
@@ -109,8 +434,46 @@
             showSection(location.hash || '#home');
         });
 
-        // On page load, show correct section
+        function openNav() {
+            nav.classList.add('open');
+            menuToggle.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeNav() {
+            nav.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+        }
+
+        menuToggle.addEventListener('click', () => {
+            const isOpen = nav.classList.toggle('open');
+            menuToggle.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 640) {
+                openNav();
+            } else {
+                closeNav();
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (window.innerWidth >= 640) {
+                return;
+            }
+
+            if (!nav.contains(event.target) && event.target !== menuToggle) {
+                closeNav();
+            }
+        });
+
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // On page load, show correct section and sync navigation state
         showSection(location.hash || '#home');
+        if (window.innerWidth >= 640) {
+            openNav();
+        }
     </script>
 </body>
 </html>
